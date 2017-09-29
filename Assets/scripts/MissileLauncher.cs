@@ -58,7 +58,6 @@ public class MissileLauncher : MonoBehaviour {
         update_max_icons();
         update_icons();
         //Debug.Log("** mL start ***");
-        Debug.Log("invoke du start");
         Invoke("ItsLaunchTime", Random.Range(0.5f, 1.0f));
     }
 
@@ -66,7 +65,6 @@ public class MissileLauncher : MonoBehaviour {
     {
         if (buffer > 0)
         {
-            Debug.Log(buffer);
             buffer -= 1;
             update_icons();
             GameObject MissileInstance;
@@ -160,7 +158,6 @@ public class MissileLauncher : MonoBehaviour {
     void SetCadence(int cadence)
     {
         cadence_tir = cadence;
-        Debug.Log(cadence_tir);
     }
 
     void SetMunitions(int max)

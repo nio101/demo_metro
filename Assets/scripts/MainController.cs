@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Net.Sockets;
 
 public class MainController : MonoBehaviour
 {
@@ -71,8 +72,19 @@ public class MainController : MonoBehaviour
     void update_bases()
     {
         // recreate / spawn missile_launchers
+        // peut-être 0 si plus de connection avec le module "earth"...
         switch (nombre_bases)
         {
+            case 0:
+                if (missile_launcher1 != null)
+                    GameObject.Destroy(missile_launcher1.gameObject);
+                if (missile_launcher2 != null)
+                    GameObject.Destroy(missile_launcher2.gameObject);
+                if (missile_launcher3 != null)
+                    GameObject.Destroy(missile_launcher3.gameObject);
+                if (missile_launcher4 != null)
+                    GameObject.Destroy(missile_launcher4.gameObject);
+                break;
             case 1:
                 if (missile_launcher1 == null)
                 {
@@ -224,6 +236,85 @@ public class MainController : MonoBehaviour
             missile_launcher4.GetComponent<MissileLauncher>().SendMessage("SetMunitions", munitions);
     }
 
+    void reset_scene()
+    {
+        kill_all_enemies();
+        if (missile_launcher1 != null)
+            GameObject.Destroy(missile_launcher1.gameObject);
+        if (missile_launcher2 != null)
+            GameObject.Destroy(missile_launcher2.gameObject);
+        if (missile_launcher3 != null)
+            GameObject.Destroy(missile_launcher3.gameObject);
+        if (missile_launcher4 != null)
+            GameObject.Destroy(missile_launcher4.gameObject);
+        missile_launcher1 = null;
+        missile_launcher2 = null;
+        missile_launcher3 = null;
+        missile_launcher4 = null;
+        update_bases();
+    }
+
+    void update_earth_bases(int b)
+    {
+        if (b != nombre_bases)
+        {
+            nombre_bases = b;
+            update_bases();
+        }
+    }
+
+    void update_earth_munitions(int m)
+    {
+        if (m != munitions)
+        {
+            munitions = m;
+            SendMunitions2Launchers();
+        }
+    }
+
+    void update_earth_cadence(int c)
+    {
+        if (c != cadence_tir)
+        {
+            cadence_tir = c;
+            SendCadence2Launchers();
+            cadenceText.text = cadence_tir.ToString() + "/mn";
+        }
+    }
+
+    void update_alien1(int c)
+    {
+        if (c != type1SpawnParMinute)
+        {
+            type1SpawnParMinute = c;
+            type1RateText.text = type1SpawnParMinute.ToString() + "/mn";
+            CancelInvoke("SpawnType1");
+            Invoke("SpawnType1", 60.0f / type1SpawnParMinute);
+        }
+    }
+
+    void update_alien2(int c)
+    {
+        if (c != type2SpawnParMinute)
+        {
+            type2SpawnParMinute = c;
+            type2RateText.text = type2SpawnParMinute.ToString() + "/mn";
+            CancelInvoke("SpawnType2");
+            Invoke("SpawnType2", 60.0f / type2SpawnParMinute);
+        }
+    }
+
+    void update_alien3(int c)
+    {
+        if (c != type3SpawnParMinute)
+        {
+            type3SpawnParMinute = c;
+            type3RateText.text = type3SpawnParMinute.ToString() + "/mn";
+            CancelInvoke("SpawnType3");
+            Invoke("SpawnType3", 60.0f / type3SpawnParMinute);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -280,8 +371,8 @@ public class MainController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.K))
         {
             nombre_bases--;
-            if (nombre_bases < 1)
-                nombre_bases = 1;
+            if (nombre_bases < 0)
+                nombre_bases = 0;
             //kill_all_enemies();
             update_bases();
         }
@@ -313,20 +404,7 @@ public class MainController : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.X))
         {
-            kill_all_enemies();
-            if (missile_launcher1 != null)
-                GameObject.Destroy(missile_launcher1.gameObject);
-            if (missile_launcher2 != null)
-                GameObject.Destroy(missile_launcher2.gameObject);
-            if (missile_launcher3 != null)
-                GameObject.Destroy(missile_launcher3.gameObject);
-            if (missile_launcher4 != null)
-                GameObject.Destroy(missile_launcher4.gameObject);
-            missile_launcher1 = null;
-            missile_launcher2 = null;
-            missile_launcher3 = null;
-            missile_launcher4 = null;
-            update_bases();
+            reset_scene();
         }
     }
 }
