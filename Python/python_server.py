@@ -185,6 +185,10 @@ last_alien2_ts = dt.datetime.now()
 last_alien3_ts = dt.datetime.now()
 timeout_delay = 5
 
+print
+print("!!! A lancer avec Python2 UNIQUEMENT !!!")
+print
+
 # TCP server init
 client = None
 address = None
